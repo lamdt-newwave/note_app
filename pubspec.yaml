@@ -19,6 +19,7 @@ dependencies:
   bloc: ^8.1.0
   flutter_svg: ^1.1.5
   equatable: ^2.0.5
+  shimmer: ^2.0.0
 
 dev_dependencies:
   flutter_test:
