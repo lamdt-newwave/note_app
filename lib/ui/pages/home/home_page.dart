@@ -50,43 +50,7 @@ class _HomePageState extends State<HomePage> {
               const SizedBox(
                 height: 36,
               ),
-              SizedBox(
-                height: 52,
-                child: TextFormField(
-                  controller: _controller,
-                  maxLines: 1,
-                  onChanged: (value) => _cubit.onTextFieldChanged(value),
-                  decoration: InputDecoration(
-                    fillColor: AppColors.lightSecondary,
-                    filled: true,
-                    border: InputBorder.none,
-                    hintText: "Search your note’s title here ...",
-                    hintStyle: theme.textTheme.bodyMedium
-                        ?.copyWith(color: AppColors.lightPlaceHolder),
-                    suffixIcon: BlocBuilder<HomeCubit, HomeState>(
-                      builder: (context, state) {
-                        return _controller.text.isEmpty
-                            ? const Icon(
-                                Icons.search_outlined,
-                                size: 24,
-                                color: AppColors.darkPrimary,
-                              )
-                            : InkWell(
-                                onTap: ()  {
-                                  _cubit.onClearTextField();
-                                  _controller.clear();
-                                },
-                                child: const Icon(
-                                  Icons.close,
-                                  size: 24,
-                                  color: AppColors.darkPrimary,
-                                ),
-                              );
-                      },
-                    ),
-                  ),
-                ),
-              ),
+              _buildSearch(theme),
               const SizedBox(
                 height: 24,
               ),
@@ -100,7 +64,7 @@ class _HomePageState extends State<HomePage> {
               const SizedBox(
                 height: 24,
               ),
-              _buildNoteList(),
+              _buildNoteList(theme),
             ],
           ),
         ),
@@ -108,13 +72,52 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Widget _buildNoteList() {
+  Widget _buildSearch(ThemeData theme) {
+    return SizedBox(
+      height: 52,
+      child: TextFormField(
+        controller: _controller,
+        maxLines: 1,
+        onChanged: (value) => _cubit.onTextFieldChanged(value),
+        decoration: InputDecoration(
+          fillColor: AppColors.lightSecondary,
+          filled: true,
+          border: InputBorder.none,
+          hintText: "Search your note’s title here ...",
+          hintStyle: theme.textTheme.bodyMedium
+              ?.copyWith(color: AppColors.lightPlaceHolder),
+          suffixIcon: BlocBuilder<HomeCubit, HomeState>(
+            builder: (context, state) {
+              return _controller.text.isEmpty
+                  ? const Icon(
+                      Icons.search_outlined,
+                      size: 24,
+                      color: AppColors.darkPrimary,
+                    )
+                  : InkWell(
+                      onTap: () {
+                        _cubit.onClearTextField();
+                        _controller.clear();
+                      },
+                      child: const Icon(
+                        Icons.close,
+                        size: 24,
+                        color: AppColors.darkPrimary,
+                      ),
+                    );
+            },
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildNoteList(ThemeData theme) {
     return BlocBuilder<HomeCubit, HomeState>(
       bloc: _cubit,
       builder: (context, state) {
-        print("12321313");
         if (state.loadNoteStatus == LoadStatus.success) {
-          return _buildSuccessfulList(state.notes, state.isEnableDelete);
+          return _buildSuccessfulList(state.notes, state.isEnableDelete, theme);
         } else if (state.loadNoteStatus == LoadStatus.loading) {
           return _buildLoadingList();
         } else {
@@ -142,10 +145,21 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Widget _buildSuccessfulList(List<NoteEntity> notes, bool isEnableDelete) {
+  Widget _buildSuccessfulList(
+      List<NoteEntity> notes, bool isEnableDelete, ThemeData theme) {
     return BlocBuilder<HomeCubit, HomeState>(
       bloc: _cubit,
       builder: (context, state) {
+        if (state.notes.isEmpty) {
+          return SizedBox(
+            height: 27,
+            child: Text(
+              "Add your first note please :D",
+              style: theme.textTheme.headlineSmall
+                  ?.copyWith(color: AppColors.redAccent),
+            ),
+          );
+        }
         return Expanded(
           child: ListView.builder(
               shrinkWrap: true,
@@ -169,61 +183,69 @@ class _HomePageState extends State<HomePage> {
   Widget _buildActionButton() {
     return BlocBuilder<HomeCubit, HomeState>(
       builder: (context, state) {
-        return state.isEnableDelete
-            ? InkWell(
-                onTap: () => _cubit.onEnableDeleteNote(),
-                child: Container(
-                  height: 60,
-                  width: 60,
-                  decoration: const BoxDecoration(
-                      shape: BoxShape.circle, color: AppColors.redAccent),
-                  child: Center(
-                      child: SvgPicture.asset(
-                    AppImages.icCheck,
-                    height: 24,
-                    width: 24,
-                    color: AppColors.lightPrimary,
-                  )),
-                ),
-              )
-            : Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  InkWell(
-                    onTap: () => _cubit.onEnableDeleteNote(),
-                    child: Container(
-                      height: 60,
-                      width: 60,
-                      decoration: const BoxDecoration(
-                          shape: BoxShape.circle, color: AppColors.redAccent),
-                      child: Center(
-                          child: SvgPicture.asset(
-                        AppImages.icTrash,
-                        height: 24,
-                        width: 24,
-                        color: AppColors.lightPrimary,
-                      )),
-                    ),
-                  ),
-                  const SizedBox(
-                    width: 24,
-                  ),
-                  Container(
+        if (state.loadNoteStatus == LoadStatus.loading) {
+          return Container();
+        } else {
+          return state.isEnableDelete && state.notes.isNotEmpty
+              ? InkWell(
+                  onTap: () => _cubit.onEnableDeleteNote(),
+                  child: Container(
                     height: 60,
                     width: 60,
                     decoration: const BoxDecoration(
-                        shape: BoxShape.circle, color: AppColors.greenAccent),
+                        shape: BoxShape.circle, color: AppColors.redAccent),
                     child: Center(
                         child: SvgPicture.asset(
-                      AppImages.icAdd,
+                      AppImages.icCheck,
                       height: 24,
                       width: 24,
                       color: AppColors.lightPrimary,
                     )),
                   ),
-                ],
-              );
+                )
+              : Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Visibility(
+                      visible: state.notes.isNotEmpty,
+                      child: InkWell(
+                        onTap: () => _cubit.onEnableDeleteNote(),
+                        child: Container(
+                          height: 60,
+                          width: 60,
+                          decoration: const BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: AppColors.redAccent),
+                          child: Center(
+                              child: SvgPicture.asset(
+                            AppImages.icTrash,
+                            height: 24,
+                            width: 24,
+                            color: AppColors.lightPrimary,
+                          )),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(
+                      width: 24,
+                    ),
+                    Container(
+                      height: 60,
+                      width: 60,
+                      decoration: const BoxDecoration(
+                          shape: BoxShape.circle, color: AppColors.greenAccent),
+                      child: Center(
+                          child: SvgPicture.asset(
+                        AppImages.icAdd,
+                        height: 24,
+                        width: 24,
+                        color: AppColors.lightPrimary,
+                      )),
+                    ),
+                  ],
+                );
+        }
       },
     );
   }
