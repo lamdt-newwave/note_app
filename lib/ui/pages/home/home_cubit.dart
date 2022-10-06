@@ -29,11 +29,15 @@ class HomeCubit extends Cubit<HomeState> {
     emit(state.copyWith(isEnableDelete: !state.isEnableDelete));
   }
 
-  void onSelectDeleteNote(int index) {
+  void onDisableDeleteNote() {
+    emit(state.copyWith(isEnableDelete: !state.isEnableDelete));
+  }
+
+  void onDeleteNote(int index) {
     emit(state.copyWith(selectedIndex: index));
   }
 
-  Future<void> onDeleteNote(int index) async {
+  Future<void> onConfirmDeleteNote(int index) async {
     noteRepository.deleteNote(state.notes[index]);
     final newNotes = await noteRepository.getNoteList();
     emit(state.copyWith(notes: newNotes, selectedIndex: -1));

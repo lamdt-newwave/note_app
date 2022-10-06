@@ -20,6 +20,8 @@ dependencies:
   flutter_svg: ^1.1.5
   equatable: ^2.0.5
   shimmer: ^2.0.0
+  intl: ^0.17.0
+  lottie: ^1.4.3
 
 dev_dependencies:
   flutter_test:
@@ -32,6 +34,7 @@ flutter:
 
   assets:
     - assets/images/
+    - assets/lottie/
   fonts:
     - family: Poppins
       fonts:
