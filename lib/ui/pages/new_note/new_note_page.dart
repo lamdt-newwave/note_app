@@ -44,7 +44,7 @@ class _NewNotePageState extends State<NewNotePage> {
             children: [
               TextFormField(
                 onChanged: _cubit.onTitleChanged,
-                maxLines: null,
+                maxLines: 1,
                 controller: _titleController,
                 keyboardType: TextInputType.multiline,
                 style: theme.textTheme.headlineMedium,
@@ -68,22 +68,27 @@ class _NewNotePageState extends State<NewNotePage> {
                   );
                 },
               ),
-              TextFormField(
-                onChanged: _cubit.onTextChanged,
-                focusNode: textFocusNote,
-                maxLines: null,
-                controller: _textController,
-                keyboardType: TextInputType.multiline,
-                style: theme.textTheme.bodyMedium,
-                decoration: InputDecoration(
-                    hintStyle: theme.textTheme.bodyMedium
-                        ?.copyWith(color: AppColors.greenAccent),
-                    hintText: "Write content here ...",
-                    contentPadding: EdgeInsets.zero,
-                    border: InputBorder.none,
-                    filled: true,
-                    fillColor: AppColors.lightPrimary),
-              )
+              Expanded(
+                child: TextFormField(
+                  onChanged: _cubit.onTextChanged,
+                  focusNode: textFocusNote,
+                  maxLines: null,
+                  controller: _textController,
+                  keyboardType: TextInputType.multiline,
+                  style: theme.textTheme.bodyMedium,
+                  decoration: InputDecoration(
+                      hintStyle: theme.textTheme.bodyMedium
+                          ?.copyWith(color: AppColors.greenAccent),
+                      hintText: "Write content here ...",
+                      contentPadding: EdgeInsets.zero,
+                      border: InputBorder.none,
+                      filled: true,
+                      fillColor: AppColors.lightPrimary),
+                ),
+              ),
+              SizedBox(
+                height: 100,
+              ),
             ],
           ),
         ),

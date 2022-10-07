@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
 import 'package:lottie/lottie.dart';
+import 'package:marquee/marquee.dart';
 import 'package:note_app/common/app_colors.dart';
 import 'package:note_app/common/app_images.dart';
 import 'package:note_app/models/entities/note.dart';
@@ -88,7 +89,7 @@ class _DetailNotePageState extends State<DetailNotePage> {
                 firstChild: SizedBox(
                     height: 36,
                     child: TextFormField(
-                      maxLines: null,
+                      maxLines: 1,
                       controller: _titleController,
                       keyboardType: TextInputType.multiline,
                       style: theme.textTheme.headlineMedium,
@@ -125,31 +126,58 @@ class _DetailNotePageState extends State<DetailNotePage> {
               const SizedBox(
                 height: 18,
               ),
-              AnimatedCrossFade(
-                firstChild: TextFormField(
-                  focusNode: textFocusNote,
-                  maxLines: null,
-                  controller: _textController,
-                  keyboardType: TextInputType.multiline,
-                  style: theme.textTheme.bodyMedium,
-                  decoration: const InputDecoration(
-                      contentPadding: EdgeInsets.zero,
-                      border: InputBorder.none,
-                      filled: true,
-                      fillColor: AppColors.lightPrimary),
+              // state.isEditing
+              //     ? TextFormField(
+              //         focusNode: textFocusNote,
+              //         maxLines: null,
+              //         controller: _textController,
+              //         keyboardType: TextInputType.multiline,
+              //         style: theme.textTheme.bodyMedium,
+              //         decoration: const InputDecoration(
+              //             contentPadding: EdgeInsets.zero,
+              //             border: InputBorder.none,
+              //             filled: true,
+              //             fillColor: AppColors.lightPrimary),
+              //       )
+              //     : Expanded(
+              //         child: Text(
+              //           note.text,
+              //           style: theme.textTheme.bodyMedium,
+              //           softWrap: true,
+              //         ),
+              //       ),
+
+              Expanded(
+                child: AnimatedCrossFade(
+                  firstChild: TextFormField(
+                    focusNode: textFocusNote,
+                    maxLines: null,
+                    controller: _textController,
+                    keyboardType: TextInputType.multiline,
+                    style: theme.textTheme.bodyMedium,
+                    decoration: const InputDecoration(
+                        contentPadding: EdgeInsets.zero,
+                        border: InputBorder.none,
+                        filled: true,
+                        fillColor: AppColors.lightPrimary),
+                  ),
+                  secondChild: Text(
+                    note.text,
+                    style: theme.textTheme.bodyMedium,
+                    softWrap: true,
+                  ),
+                  crossFadeState: state.isEditing
+                      ? CrossFadeState.showFirst
+                      : CrossFadeState.showSecond,
+                  duration: const Duration(milliseconds: 500),
+                  firstCurve: Curves.easeIn,
+                  secondCurve: Curves.easeOut,
+                  sizeCurve: Curves.linear,
                 ),
-                secondChild: Text(
-                  note.text,
-                  style: theme.textTheme.bodyMedium,
-                ),
-                crossFadeState: state.isEditing
-                    ? CrossFadeState.showFirst
-                    : CrossFadeState.showSecond,
-                duration: const Duration(milliseconds: 500),
-                firstCurve: Curves.easeIn,
-                secondCurve: Curves.easeOut,
-                sizeCurve: Curves.linear,
-              )
+              ),
+              SizedBox(
+                height: 120,
+              ),
             ],
           ),
         );
@@ -196,10 +224,11 @@ class _DetailNotePageState extends State<DetailNotePage> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         CircularActionButton(
-                            backgroundColor: AppColors.greenAccent,
-                            icon: AppImages.icClose,
-                            onPressed: _cubit.onCancel,
-                            iconColor: AppColors.lightPrimary),
+                          backgroundColor: AppColors.greenAccent,
+                          icon: AppImages.icClose,
+                          onPressed: _cubit.onCancel,
+                          iconColor: AppColors.lightPrimary,
+                        ),
                         const SizedBox(
                           width: 24,
                         ),

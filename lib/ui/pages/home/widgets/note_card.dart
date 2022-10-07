@@ -99,7 +99,7 @@ class _NoteCardState extends State<NoteCard> {
       decoration: const BoxDecoration(
         color: Colors.amber,
         borderRadius: BorderRadius.only(
-            bottomLeft: Radius.circular(8), bottomRight: Radius.circular(8)),
+            bottomLeft: Radius.circular(8), bottomRight: Radius.circular(8),),
       ),
       child: Row(
         children: [
@@ -109,10 +109,10 @@ class _NoteCardState extends State<NoteCard> {
               child: Container(
                 decoration: const BoxDecoration(
                     borderRadius:
-                        BorderRadius.only(bottomLeft: Radius.circular(8)),
+                        BorderRadius.only(bottomLeft: Radius.circular(8),),
                     color: AppColors.greenAccent),
                 child: Center(
-                  child: SvgPicture.asset(AppImages.icClose),
+                  child: SvgPicture.asset(AppImages.icClose,),
                 ),
               ),
             ),
@@ -123,7 +123,7 @@ class _NoteCardState extends State<NoteCard> {
               child: Container(
                 decoration: const BoxDecoration(
                     borderRadius:
-                        BorderRadius.only(bottomRight: Radius.circular(8)),
+                        BorderRadius.only(bottomRight: Radius.circular(8),),
                     color: AppColors.redAccent),
                 child: Center(
                   child: SvgPicture.asset(AppImages.icCheck),
