@@ -12,6 +12,9 @@ import 'package:note_app/ui/widgets/common/404_page.dart';
 import 'package:note_app/ui/widgets/common/loading_widget.dart';
 import 'package:note_app/utils/app_date_utils.dart';
 
+import '../../../router/app_routes.dart';
+import '../home/home_cubit.dart';
+
 class DetailNotePage extends StatefulWidget {
   const DetailNotePage({Key? key}) : super(key: key);
 
@@ -115,7 +118,7 @@ class _DetailNotePageState extends State<DetailNotePage> {
               SizedBox(
                 height: 18,
                 child: Text(
-                  AppDateUtils.toDateTimeString(note.createdTime),
+                  AppDateUtils.toDateTimeString(note.updatedTime),
                   style: theme.textTheme.bodySmall,
                 ),
               ),
@@ -204,9 +207,16 @@ class _DetailNotePageState extends State<DetailNotePage> {
                             backgroundColor: AppColors.redAccent,
                             icon: AppImages.icCheck,
                             onPressed: () {
-                              _cubit.onConfirm(state.note!.copyWith(
-                                  title: _titleController.text,
-                                  text: _textController.text), context);
+                              _cubit.onConfirm(
+                                state.note!.copyWith(
+                                    updatedTime: DateTime.now(),
+                                    title: _titleController.text,
+                                    text: _textController.text),
+                              );
+                              context.read<HomeCubit>().fetchNotes();
+                              if (state.isDeleting) {
+                                Get.offNamed(AppRoutes.home);
+                              }
                             },
                             iconColor: AppColors.lightPrimary)
                       ],

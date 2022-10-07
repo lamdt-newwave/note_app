@@ -1,5 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:get/get.dart';
+import 'package:note_app/router/app_routes.dart';
 
 import '../../../models/entities/note.dart';
 import '../../../models/enums/load_status.dart';
@@ -38,7 +40,7 @@ class HomeCubit extends Cubit<HomeState> {
   }
 
   Future<void> onConfirmDeleteNote(int index) async {
-    noteRepository.deleteNote(state.notes[index]);
+    noteRepository.deleteNoteById(state.notes[index].id);
     final newNotes = await noteRepository.getNoteList();
     emit(state.copyWith(notes: newNotes, selectedIndex: -1));
   }
@@ -57,5 +59,9 @@ class HomeCubit extends Cubit<HomeState> {
   Future<void> onClearTextField() async {
     final notes = await noteRepository.getNoteList();
     emit(state.copyWith(notes: notes));
+  }
+
+  void onCreateNewNote() {
+    Get.toNamed(AppRoutes.newNote);
   }
 }

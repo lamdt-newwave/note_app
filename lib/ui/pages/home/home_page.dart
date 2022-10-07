@@ -124,7 +124,7 @@ class _HomePageState extends State<HomePage> {
                 ),
                 CircularActionButton(
                   backgroundColor: AppColors.greenAccent,
-                  onPressed: () {},
+                  onPressed: _cubit.onCreateNewNote,
                   icon: AppImages.icAdd,
                   iconColor: AppColors.lightPrimary,
                 ),

@@ -1,41 +1,26 @@
-import 'package:note_app/models/entities/note.dart';
+import '../models/entities/note.dart';
+import 'note_repository.dart';
 
-abstract class NoteRepository {
-  Future<List<NoteEntity>> getNoteList();
-
-  Future<bool> deleteNoteById(int noteId);
-
-  Future<NoteEntity> getNoteById(int noteId);
-
-  Future<NoteEntity> updateNote(NoteEntity updatedNote);
-
-  Future<NoteEntity> createNewNote(NoteEntity newNote);
-}
-
-class NoteRepositoryImpl extends NoteRepository {
+class MockNoteRepositoryImpl extends NoteRepository {
   final notes = [
     NoteEntity(
       id: 1,
       title: "About this day",
       text:
           "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam ultrices vehicula iaculis. Aliquam at accumsan leo. Proin in diam quam. Pellentesque habitant morbi ...",
-      createdTime: DateTime.now(),
-      updatedTime: DateTime.now(),
     ),
     NoteEntity(
-        id: 2,
-        title: "About this day",
-        text:
-            "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam ultrices vehicula iaculis. Aliquam at accumsan leo. Proin in diam quam. Pellentesque habitant morbi ...",
-        createdTime: DateTime.now(),
-        updatedTime: DateTime.now()),
+      id: 2,
+      title: "About this day",
+      text:
+          "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam ultrices vehicula iaculis. Aliquam at accumsan leo. Proin in diam quam. Pellentesque habitant morbi ...",
+    ),
     NoteEntity(
-        id: 3,
-        title: "About this day",
-        text:
-            "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam ultrices vehicula iaculis. Aliquam at accumsan leo. Proin in diam quam. Pellentesque habitant morbi ...",
-        createdTime: DateTime.now(),
-        updatedTime: DateTime.now())
+      id: 3,
+      title: "About this day",
+      text:
+          "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam ultrices vehicula iaculis. Aliquam at accumsan leo. Proin in diam quam. Pellentesque habitant morbi ...",
+    )
   ];
 
   @override
@@ -73,7 +58,7 @@ class NoteRepositoryImpl extends NoteRepository {
 
   @override
   Future<NoteEntity> createNewNote(NoteEntity newNote) {
-    // TODO: implement createNewNote
-    throw UnimplementedError();
+    notes.add(newNote.copyWith(id: notes.length + 1));
+    return Future.value(notes.last);
   }
 }

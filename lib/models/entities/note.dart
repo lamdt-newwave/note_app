@@ -6,12 +6,13 @@ class NoteEntity {
   final int id;
 
   NoteEntity({
-    required this.id,
-    required this.title,
-    required this.text,
-    required this.createdTime,
-    required this.updatedTime,
-  });
+    this.id = -1,
+    this.title = "",
+    this.text = "",
+    DateTime? createdTime,
+    DateTime? updatedTime,
+  })  : createdTime = createdTime ?? DateTime.now(),
+        updatedTime = updatedTime ?? DateTime.now();
 
   NoteEntity copyWith({
     String? title,

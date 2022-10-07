@@ -1,12 +1,9 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
 import 'package:note_app/models/entities/note.dart';
 import 'package:note_app/models/enums/load_status.dart';
-import 'package:note_app/router/app_routes.dart';
-import 'package:note_app/ui/pages/home/home_cubit.dart';
 
 import '../../../repositories/note_repository.dart';
 
@@ -44,28 +41,32 @@ class DetailNoteCubit extends Cubit<DetailNoteState> {
   }
 
   void onBack() {
+    emit(state.copyWith(isEditing: false, isSaving: false, isDeleting: false));
     Get.back();
   }
 
-  Future<void> onConfirm(NoteEntity note, BuildContext context) async {
+  Future<void> onConfirm(NoteEntity note) async {
     if (state.isEditing) {
       try {
         final result = await noteRepository.updateNote(note);
         emit(state.copyWith(note: result, isSaving: false, isEditing: false));
-      } catch (e) {}
+      } catch (e) {
+        throw Exception("Can't update note with id: ${note.id}");
+      }
     } else if (state.isDeleting) {
       try {
-        final result = await noteRepository.deleteNote(note);
-        emit(state.copyWith(
-            isSaving: false, isEditing: false, isDeleting: false));
-        final homeCubit = context.read<HomeCubit>();
-        await homeCubit.fetchNotes();
-        Get.offNamed(AppRoutes.home);
-      } catch (e) {}
+        final result = await noteRepository.deleteNoteById(note.id);
+        if (result) {
+          emit(state.copyWith(
+              isSaving: false, isEditing: false, isDeleting: false));
+        }
+      } catch (e) {
+        throw Exception("Can't delete note with id: ${note.id}");
+      }
     }
   }
 
   void onCancel() {
-    emit(state.copyWith(isEditing: false, isSaving: false));
+    emit(state.copyWith(isEditing: false, isSaving: false, isDeleting: false));
   }
 }
