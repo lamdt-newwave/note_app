@@ -1,3 +1,4 @@
+import 'package:note_app/database/sqlite_helper.dart';
 import 'package:note_app/models/entities/note.dart';
 
 abstract class NoteRepository {
@@ -13,67 +14,33 @@ abstract class NoteRepository {
 }
 
 class NoteRepositoryImpl extends NoteRepository {
-  final notes = [
-    NoteEntity(
-      id: 1,
-      title: "About this day",
-      text:
-          "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam ultrices vehicula iaculis. Aliquam at accumsan leo. Proin in diam quam. Pellentesque habitant morbi ...",
-      createdTime: DateTime.now(),
-      updatedTime: DateTime.now(),
-    ),
-    NoteEntity(
-        id: 2,
-        title: "About this day",
-        text:
-            "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam ultrices vehicula iaculis. Aliquam at accumsan leo. Proin in diam quam. Pellentesque habitant morbi ...",
-        createdTime: DateTime.now(),
-        updatedTime: DateTime.now()),
-    NoteEntity(
-        id: 3,
-        title: "About this day",
-        text:
-            "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam ultrices vehicula iaculis. Aliquam at accumsan leo. Proin in diam quam. Pellentesque habitant morbi ...",
-        createdTime: DateTime.now(),
-        updatedTime: DateTime.now())
-  ];
+  final SqliteHelper localStorage;
+
+  NoteRepositoryImpl({required this.localStorage});
 
   @override
-  Future<List<NoteEntity>> getNoteList() {
-    return Future.value(notes);
+  Future<NoteEntity> createNewNote(NoteEntity newNote) async {
+    int id = await localStorage.insertNote(newNote);
+    return newNote.copyWith(id: id);
   }
 
   @override
-  Future<bool> deleteNoteById(int noteId) {
-    try {
-      notes.remove(notes.firstWhere((element) => element.id == noteId));
-      return Future.value(true);
-    } catch (e) {
-      rethrow;
-    }
+  Future<bool> deleteNoteById(int noteId) async {
+    return await sqliteHelper.deleteNote(noteId);
   }
 
   @override
-  Future<NoteEntity> getNoteById(int noteId) {
-    final note = notes.firstWhere((element) => element.id == noteId,
-        orElse: () => throw Exception("Not found not with id: $noteId"));
-    return Future.value(note);
+  Future<NoteEntity> getNoteById(int noteId) async {
+    return await localStorage.getNoteById(noteId);
   }
 
   @override
-  Future<NoteEntity> updateNote(NoteEntity updatedNote) {
-    try {
-      notes[notes.indexWhere((element) => element.id == updatedNote.id)] =
-          updatedNote;
-      return Future.value(updatedNote);
-    } catch (e) {
-      rethrow;
-    }
+  Future<List<NoteEntity>> getNoteList() async {
+    return await localStorage.getNoteList();
   }
 
   @override
-  Future<NoteEntity> createNewNote(NoteEntity newNote) {
-    // TODO: implement createNewNote
-    throw UnimplementedError();
+  Future<NoteEntity> updateNote(NoteEntity updatedNote) async {
+    return await localStorage.updateNote(updatedNote);
   }
 }

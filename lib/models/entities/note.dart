@@ -33,4 +33,23 @@ class NoteEntity {
   String toString() {
     return 'NoteEntity{title: $title, text: $text, createdTime: $createdTime, updatedTime: $updatedTime, id: $id}';
   }
+
+  Map<String, dynamic> toMap() {
+    return {
+      'id': id,
+      'text': text,
+      'createdTime': createdTime.millisecondsSinceEpoch,
+      'updatedTime': updatedTime.millisecondsSinceEpoch,
+      'title': title
+    };
+  }
+
+  Map<String, dynamic> toMapWithoutId() {
+    return {
+      'text': text,
+      'createdTime': createdTime.millisecondsSinceEpoch,
+      'updatedTime': updatedTime.millisecondsSinceEpoch,
+      'title': title
+    };
+  }
 }

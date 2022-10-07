@@ -51,8 +51,11 @@ class HomeCubit extends Cubit<HomeState> {
 
   Future<void> onTextFieldChanged(String newText) async {
     final newNotes = await noteRepository.getNoteList();
-    final filteredNotes =
-        newNotes.where((element) => element.title.contains(newText)).toList();
+    final filteredNotes = newNotes
+        .where((element) =>
+            element.title.toLowerCase().contains(newText.toLowerCase()) ||
+            element.text.toLowerCase().contains(newText.toLowerCase()))
+        .toList();
     emit(state.copyWith(notes: filteredNotes));
   }
 

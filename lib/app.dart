@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
 import 'package:note_app/common/app_colors.dart';
+import 'package:note_app/database/sqlite_helper.dart';
 import 'package:note_app/repositories/mock_note_repository.dart';
 import 'package:note_app/repositories/note_repository.dart';
 import 'package:note_app/router/app_routes.dart';
@@ -19,7 +20,7 @@ class NoteApp extends StatelessWidget {
     return MultiRepositoryProvider(
       providers: [
         RepositoryProvider<NoteRepository>(create: (context) {
-          return MockNoteRepositoryImpl();
+          return NoteRepositoryImpl(localStorage: sqliteHelper);
         }),
       ],
       child: MultiBlocProvider(
